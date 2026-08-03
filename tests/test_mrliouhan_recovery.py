@@ -45,9 +45,7 @@ class RecoveryManifestTests(unittest.TestCase):
 
             self.assertFalse(result["ok"])
             self.assertEqual(len(result["mismatched"]), 1)
-            self.assertEqual(
-                result["mismatched"][0]["relative_path"], "artifact.json"
-            )
+            self.assertEqual(result["mismatched"][0]["relative_path"], "artifact.json")
 
     def test_transfer_record_contains_return_and_rollback_paths(self):
         with tempfile.TemporaryDirectory() as temp_dir:
