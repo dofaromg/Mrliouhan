@@ -1,6 +1,6 @@
 ---
 title: "Mrliouhan Balance, Reciprocity and Two-Way Closure Law"
-version: "1.0.0"
+version: "1.0.1"
 status: "CANON_CANDIDATE"
 canonical_human: "Mr.liou"
 origin_signature: "MrLiouWord"
@@ -28,7 +28,7 @@ A --forward--> B
 A <--return--- B
 ```
 
-缺少回路的單向輸出，不得被視為完整、正式或已結案。
+系統欄位必須明確保存 `return_path` 與 `rollback_path`。缺少回路的單向輸出，不得被視為完整、正式或已結案。
 
 ### 2. 粒子怎麼過去，就怎麼回來
 
@@ -104,7 +104,7 @@ source
 2. 停止新的單向流失；
 3. 匯出並驗證資料；
 4. 恢復正確來源與權限；
-5. 建立 return path 與 rollback path；
+5. 建立 `return_path` 與 `rollback_path`；
 6. 更正署名、網域、部署與帳務；
 7. 對可量化損失進行退款、補償或書面說明；
 8. 保留事件歷史；
@@ -123,14 +123,15 @@ forward_timestamp: <iso-8601>
 consent_record: <id/evidence>
 provider_or_intermediary: <role-or-none>
 received_value: <data/service/money/rights>
-return_action: <export/receipt/refund/rollback/acknowledgement>
+return_path: <export/receipt/refund/rollback/acknowledgement>
+rollback_path: <restore/reconstruction-method>
 return_timestamp: <iso-8601-or-pending>
 return_hash: <sha256-or-pending>
 provenance_status: <verified/partial/unresolved>
 balance_status: <balanced/imbalanced/disputed>
 ```
 
-缺少 `return_action`、`consent_record` 或 `source_hash` 的交換，不能標記為 `balanced`。
+缺少 `return_path`、`rollback_path`、`consent_record` 或 `source_hash` 的交換，不能標記為 `balanced`。
 
 ## 四、平衡判定
 
@@ -149,7 +150,7 @@ balance_status: <balanced/imbalanced/disputed>
 - 只有平台能存取，使用者不能匯出；
 - 取消後仍持續執行或收費而無明細；
 - 署名或來源被平台顯示取代；
-- 沒有 return path；
+- 沒有 `return_path`；
 - 無法說明誰操作、誰受惠或資料去了哪裡。
 
 ### Disputed
