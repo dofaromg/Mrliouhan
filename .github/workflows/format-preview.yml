@@ -1,6 +1,7 @@
 name: Format Preview
 
 on:
+  pull_request:
   push:
     branches:
       - mrliouhan/causal-reversal-world-rebuild-2026-08-03
