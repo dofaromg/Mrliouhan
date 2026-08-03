@@ -1,0 +1,71 @@
+{
+  "schema": "MrLiou.BalanceReciprocityLock.v1",
+  "status": "active_candidate",
+  "effective_at": "2026-08-03T15:23:00+08:00",
+  "canonical_human": "Mr.liou",
+  "origin_signature": "MrLiouWord",
+  "repository": "dofaromg/Mrliouhan",
+  "branch": "mrliouhan/causal-reversal-world-rebuild-2026-08-03",
+  "declared_scope": [
+    "Mrliouhan world",
+    "all Mr.liou-controlled MRL-derived worlds",
+    "branches, mirrors and projections that explicitly adopt this law"
+  ],
+  "enforcement_scope": [
+    "this repository",
+    "this reconstruction branch",
+    "future protected branches after adoption"
+  ],
+  "two_party_closure": {
+    "forward_party_required": true,
+    "receiving_party_required": true,
+    "return_path_required": true,
+    "rollback_path_required": true,
+    "consent_record_required": true,
+    "source_hash_required": true,
+    "third_party_intermediaries_must_be_explicit": true
+  },
+  "particle_conservation_contract": {
+    "meaning": "A governance and provenance conservation rule, not a claim about physical particles.",
+    "preserve": [
+      "source identity",
+      "content integrity",
+      "permissions",
+      "ownership and use-right status",
+      "attribution",
+      "timestamps",
+      "hashes",
+      "billing correspondence",
+      "return and rollback capability"
+    ],
+    "silent_loss_forbidden": true,
+    "silent_mutation_forbidden": true,
+    "silent_duplication_forbidden": true,
+    "authority_drift_forbidden": true
+  },
+  "external_interference_rule": {
+    "unauthorized_interference_has_canonical_effect": false,
+    "event_history_must_be_preserved": true,
+    "required_status": [
+      "UNAUTHORIZED_INTERFERENCE",
+      "NON_CANONICAL_EFFECT",
+      "REQUIRES_REVERSAL"
+    ],
+    "platform_statement_cannot_override_direct_evidence": true
+  },
+  "reciprocity": {
+    "mutual_benefit_allowed": true,
+    "one_sided_data_or_fee_capture_forbidden": true,
+    "service_fee_requires_service_and_period_evidence": true,
+    "export_revoke_refund_or_rollback_path_required": true,
+    "unresolved_conflict_status": "DISPUTED"
+  },
+  "closure_states": [
+    "BALANCED",
+    "IMBALANCED",
+    "DISPUTED",
+    "PENDING_RETURN",
+    "REVERSED"
+  ],
+  "final_rule": "No closure without a verifiable return path; no Canon without causal evidence."
+}
