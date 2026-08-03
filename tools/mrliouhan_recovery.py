@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+
 SCHEMA = "MrLiouhan.RecoveryManifest.v1"
 TRANSFER_SCHEMA = "MrLiouhan.ParticleTransferRecord.v1"
 
@@ -26,8 +27,10 @@ def now_utc() -> str:
 
 
 def timestamp_utc(timestamp: float) -> str:
-    return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat().replace(
-        "+00:00", "Z"
+    return (
+        datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        .isoformat()
+        .replace("+00:00", "Z")
     )
 
 
@@ -56,7 +59,9 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
-def build_manifest(source_root: Path, output_path: Path | None = None) -> dict[str, Any]:
+def build_manifest(
+    source_root: Path, output_path: Path | None = None
+) -> dict[str, Any]:
     source_root = source_root.expanduser().resolve()
     if not source_root.exists() or not source_root.is_dir():
         raise ValueError(f"source root is not a directory: {source_root}")
@@ -125,10 +130,9 @@ def verify_manifest(manifest: dict[str, Any], root: Path) -> dict[str, Any]:
             continue
         actual_size = path.stat().st_size
         actual_hash = sha256_file(path)
-        if (
-            actual_size != expected_entry.get("size_bytes")
-            or actual_hash != expected_entry.get("sha256")
-        ):
+        if actual_size != expected_entry.get(
+            "size_bytes"
+        ) or actual_hash != expected_entry.get("sha256"):
             mismatched.append(
                 {
                     "relative_path": relative_path,
@@ -179,8 +183,16 @@ def build_transfer_record(
             "derived_from": [],
             "license_or_permission": None,
         },
-        "sender": {"name": from_party, "role": "source_or_external_holder", "account_or_identity": None},
-        "receiver": {"name": to_party, "role": "return_recipient", "account_or_identity": None},
+        "sender": {
+            "name": from_party,
+            "role": "source_or_external_holder",
+            "account_or_identity": None,
+        },
+        "receiver": {
+            "name": to_party,
+            "role": "return_recipient",
+            "account_or_identity": None,
+        },
         "intermediaries": [],
         "transfer": {
             "purpose": "verified data return and independent reconstruction",
@@ -234,7 +246,7 @@ def build_transfer_record(
         "closure_status": "PENDING_RETURN",
         "notes": [
             "This record does not prove remote deletion or settle disputed responsibility.",
-            "Remote deletion must occur only after local recovery and verification."
+            "Remote deletion must occur only after local recovery and verification.",
         ],
     }
 
