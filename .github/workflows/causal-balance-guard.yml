@@ -1,0 +1,128 @@
+name: Causal Balance and Two-Way Closure Guard
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  causal-balance-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate causal and reciprocity locks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          root = pathlib.Path('.')
+          errors = []
+
+          causal_path = root / '.mrliou' / 'causal-provenance-lock.json'
+          balance_path = root / '.mrliou' / 'balance-reciprocity-lock.json'
+          law_path = root / 'docs' / 'law' / 'MRLIOUHAN_BALANCE_RECIPROCITY_LAW.md'
+          boundary_path = root / 'UPSTREAM_AND_DERIVATION.md'
+
+          for path in (causal_path, balance_path, law_path, boundary_path):
+              if not path.exists():
+                  errors.append(f'missing required governance file: {path}')
+
+          if causal_path.exists():
+              try:
+                  causal = json.loads(causal_path.read_text(encoding='utf-8'))
+                  expected = {
+                      'canonical_human': 'Mr.liou',
+                      'origin_signature': 'MrLiouWord',
+                      'repository': 'dofaromg/Mrliouhan',
+                  }
+                  for key, value in expected.items():
+                      if causal.get(key) != value:
+                          errors.append(f'{causal_path}: {key}={causal.get(key)!r}, expected {value!r}')
+                  law = causal.get('causal_law') or {}
+                  for flag in ('forward_path_required', 'return_path_required', 'rollback_path_required', 'history_append_only'):
+                      if law.get(flag) is not True:
+                          errors.append(f'{causal_path}: causal_law.{flag} must be true')
+              except Exception as exc:
+                  errors.append(f'{causal_path}: invalid JSON: {exc}')
+
+          if balance_path.exists():
+              try:
+                  balance = json.loads(balance_path.read_text(encoding='utf-8'))
+                  expected = {
+                      'canonical_human': 'Mr.liou',
+                      'origin_signature': 'MrLiouWord',
+                      'repository': 'dofaromg/Mrliouhan',
+                  }
+                  for key, value in expected.items():
+                      if balance.get(key) != value:
+                          errors.append(f'{balance_path}: {key}={balance.get(key)!r}, expected {value!r}')
+
+                  closure = balance.get('two_party_closure') or {}
+                  required = (
+                      'forward_party_required',
+                      'receiving_party_required',
+                      'return_path_required',
+                      'rollback_path_required',
+                      'consent_record_required',
+                      'source_hash_required',
+                      'third_party_intermediaries_must_be_explicit',
+                  )
+                  for flag in required:
+                      if closure.get(flag) is not True:
+                          errors.append(f'{balance_path}: two_party_closure.{flag} must be true')
+
+                  interference = balance.get('external_interference_rule') or {}
+                  if interference.get('unauthorized_interference_has_canonical_effect') is not False:
+                      errors.append(f'{balance_path}: unauthorized interference must have no canonical effect')
+                  if interference.get('event_history_must_be_preserved') is not True:
+                      errors.append(f'{balance_path}: interference history must be preserved')
+
+                  if balance.get('final_rule') != 'No closure without a verifiable return path; no Canon without causal evidence.':
+                      errors.append(f'{balance_path}: final_rule mismatch')
+              except Exception as exc:
+                  errors.append(f'{balance_path}: invalid JSON: {exc}')
+
+          if law_path.exists():
+              law_text = law_path.read_text(encoding='utf-8')
+              required_markers = [
+                  '雙向閉環',
+                  '粒子怎麼過去，就怎麼回來',
+                  '平等互惠',
+                  '外部干擾失效原則',
+                  '因果不可刪除',
+                  'return_path',
+                  'balance_status',
+              ]
+              for marker in required_markers:
+                  if marker not in law_text:
+                      errors.append(f'{law_path}: missing marker {marker!r}')
+
+          if boundary_path.exists():
+              boundary = boundary_path.read_text(encoding='utf-8')
+              for marker in ('OpenManus', 'Mr.liou / MrLiouWord', 'upstream_unmodified', 'mrl_original'):
+                  if marker not in boundary:
+                      errors.append(f'{boundary_path}: missing upstream boundary marker {marker!r}')
+
+          if errors:
+              print('Causal Balance Guard FAILED')
+              for error in errors:
+                  print(f' - {error}')
+              sys.exit(1)
+
+          print('Causal Balance Guard PASS')
+          print('canonical_human=Mr.liou')
+          print('origin_signature=MrLiouWord')
+          print('two_way_closure=required')
+          print('external_interference_canonical_effect=false')
+          print('history_append_only=true')
+          PY
