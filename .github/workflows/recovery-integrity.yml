@@ -1,0 +1,115 @@
+name: Recovery Integrity and Construction Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  recovery-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run recovery tests
+        run: python -m unittest tests.test_mrliouhan_recovery -v
+
+      - name: Validate governance construction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          root = pathlib.Path('.')
+          required = [
+              '.mrliou/processing-rights-lock.json',
+              '.mrliou/causal-provenance-lock.json',
+              '.mrliou/balance-reciprocity-lock.json',
+              'schemas/particle-transfer-record.schema.json',
+              'tools/mrliouhan_recovery.py',
+              'tests/test_mrliouhan_recovery.py',
+              'docs/evidence/EVIDENCE_CLASSIFICATION.md',
+              'docs/runbooks/DATA_RETURN_REVERSAL_RUNBOOK.md',
+              'docs/architecture/MRLIOUHAN_WORLD_REBUILD.md',
+              'docs/review/WINDOW_REQUIREMENTS_REVIEW_2026-08-03.md',
+              'config/external-platforms.example.yaml',
+              'UPSTREAM_AND_DERIVATION.md',
+          ]
+          errors = []
+          for item in required:
+              if not (root / item).exists():
+                  errors.append(f'missing required construction: {item}')
+
+          json_paths = [
+              root / '.mrliou/processing-rights-lock.json',
+              root / '.mrliou/causal-provenance-lock.json',
+              root / '.mrliou/balance-reciprocity-lock.json',
+              root / 'schemas/particle-transfer-record.schema.json',
+          ]
+          parsed = {}
+          for path in json_paths:
+              if not path.exists():
+                  continue
+              try:
+                  parsed[str(path)] = json.loads(path.read_text(encoding='utf-8'))
+              except Exception as exc:
+                  errors.append(f'invalid JSON {path}: {exc}')
+
+          rights = parsed.get('.mrliou/processing-rights-lock.json', {})
+          if (rights.get('subject') or {}).get('human') != 'Mr.liou':
+              errors.append('processing rights subject must be Mr.liou')
+          capabilities = rights.get('required_capabilities') or {}
+          for key in (
+              'access', 'use', 'export', 'migrate', 'recover',
+              'verify_integrity', 'inspect_processing_history',
+              'inspect_billing_correspondence', 'request_stop_processing'
+          ):
+              if capabilities.get(key) is not True:
+                  errors.append(f'processing capability must be true: {key}')
+
+          classes = set(rights.get('evidence_classes') or [])
+          expected_classes = {
+              'USER_ACCOUNT', 'DIRECT_EVIDENCE', 'PLATFORM_STATEMENT',
+              'VERIFIED_FACT', 'INFERENCE', 'UNRESOLVED'
+          }
+          if classes != expected_classes:
+              errors.append('evidence classes do not match the fairness protocol')
+
+          schema = parsed.get('schemas/particle-transfer-record.schema.json', {})
+          required_record_fields = set(schema.get('required') or [])
+          for key in ('source', 'sender', 'receiver', 'consent', 'integrity', 'return_path', 'rollback_path', 'evidence', 'closure_status'):
+              if key not in required_record_fields:
+                  errors.append(f'particle transfer schema missing required field: {key}')
+
+          review = root / 'docs/review/WINDOW_REQUIREMENTS_REVIEW_2026-08-03.md'
+          if review.exists():
+              text = review.read_text(encoding='utf-8')
+              for marker in ('processing-rights', 'Two-way closure', 'Recover first, remove later', 'Pending external export'):
+                  if marker not in text:
+                      errors.append(f'window review missing marker: {marker}')
+
+          if errors:
+              print('Recovery Integrity Gate FAILED')
+              for error in errors:
+                  print(f' - {error}')
+              sys.exit(1)
+
+          print('Recovery Integrity Gate PASS')
+          print('processing_rights=present')
+          print('evidence_protocol=present')
+          print('return_tooling=tested')
+          print('external_adapters=disabled_by_default')
+          PY
