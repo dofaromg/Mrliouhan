@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mrliouword.com/schemas/particle-transfer-record.schema.json",
+  "title": "MrLiouhan Particle Transfer Record",
+  "description": "A provenance and governance record for data, permissions, fees, tasks, attribution or artifacts moving between parties and returning through a verifiable path.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "record_id",
+    "artifact_id",
+    "source",
+    "sender",
+    "receiver",
+    "transfer",
+    "consent",
+    "integrity",
+    "return_path",
+    "rollback_path",
+    "evidence",
+    "closure_status"
+  ],
+  "properties": {
+    "schema": {"const": "MrLiouhan.ParticleTransferRecord.v1"},
+    "record_id": {"type": "string", "minLength": 1},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "source_location", "source_timestamp", "derived_from"],
+      "properties": {
+        "source_type": {"type": "string"},
+        "source_location": {"type": "string"},
+        "source_timestamp": {"type": "string", "format": "date-time"},
+        "derived_from": {"type": "array", "items": {"type": "string"}},
+        "license_or_permission": {"type": ["string", "null"]}
+      }
+    },
+    "sender": {"$ref": "#/$defs/party"},
+    "receiver": {"$ref": "#/$defs/party"},
+    "intermediaries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/party"},
+      "default": []
+    },
+    "transfer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purpose", "started_at", "provider_role"],
+      "properties": {
+        "purpose": {"type": "string"},
+        "started_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": ["string", "null"], "format": "date-time"},
+        "provider_role": {"type": "string"},
+        "published_locations": {"type": "array", "items": {"type": "string"}},
+        "domain_bindings": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "record_location"],
+      "properties": {
+        "status": {"enum": ["EXPLICIT", "WITHDRAWN", "DISPUTED", "NOT_FOUND"]},
+        "record_location": {"type": ["string", "null"]},
+        "scope": {"type": ["string", "null"]},
+        "withdrawn_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "source_hash", "returned_hash", "verification_status"],
+      "properties": {
+        "algorithm": {"const": "SHA-256"},
+        "source_hash": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+        "returned_hash": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "verification_status": {"enum": ["PENDING", "MATCH", "MISMATCH", "NOT_AVAILABLE"]}
+      }
+    },
+    "billing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {"enum": ["NONE", "DOCUMENTED", "DISPUTED", "REFUNDED", "UNRESOLVED"]},
+        "amount": {"type": ["number", "null"]},
+        "currency": {"type": ["string", "null"]},
+        "service_period": {"type": ["string", "null"]},
+        "invoice_or_order_id": {"type": ["string", "null"]},
+        "usage_record_location": {"type": ["string", "null"]},
+        "refund_or_reversal_record": {"type": ["string", "null"]}
+      }
+    },
+    "return_path": {"$ref": "#/$defs/pathControl"},
+    "rollback_path": {"$ref": "#/$defs/pathControl"},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["classification", "location", "description"],
+        "properties": {
+          "classification": {"enum": ["USER_ACCOUNT", "DIRECT_EVIDENCE", "PLATFORM_STATEMENT", "VERIFIED_FACT", "INFERENCE", "UNRESOLVED"]},
+          "location": {"type": "string"},
+          "description": {"type": "string"},
+          "captured_at": {"type": ["string", "null"], "format": "date-time"}
+        }
+      }
+    },
+    "closure_status": {"enum": ["BALANCED", "IMBALANCED", "DISPUTED", "PENDING_RETURN", "REVERSED"]},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role"],
+      "properties": {
+        "name": {"type": "string"},
+        "role": {"type": "string"},
+        "account_or_identity": {"type": ["string", "null"]}
+      }
+    },
+    "pathControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "method", "evidence_location"],
+      "properties": {
+        "status": {"enum": ["AVAILABLE", "EXECUTED", "VERIFIED", "BLOCKED", "MISSING", "DISPUTED"]},
+        "method": {"type": "string"},
+        "evidence_location": {"type": ["string", "null"]},
+        "verified_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    }
+  }
+}

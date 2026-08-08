@@ -1,0 +1,64 @@
+{
+  "schema": "MrLiou.ProcessingRightsLock.v1",
+  "status": "active_candidate",
+  "effective_at": "2026-08-03T18:53:00+08:00",
+  "subject": {
+    "human": "Mr.liou",
+    "github_identity": "dofaromg",
+    "origin_signature": "MrLiouWord"
+  },
+  "scope": {
+    "included": [
+      "materials built by Mr.liou",
+      "materials uploaded or supplied by Mr.liou",
+      "accounts, repositories, domains and deployments controlled by Mr.liou",
+      "derived artifacts to the extent supported by source, license, consent and contribution evidence"
+    ],
+    "excluded_or_separately_attributed": [
+      "unmodified third-party upstream code",
+      "third-party trademarks",
+      "platform infrastructure not owned or controlled by Mr.liou",
+      "claims not supported by evidence, contract or applicable law"
+    ]
+  },
+  "required_capabilities": {
+    "access": true,
+    "use": true,
+    "export": true,
+    "migrate": true,
+    "recover": true,
+    "verify_integrity": true,
+    "inspect_processing_history": true,
+    "inspect_billing_correspondence": true,
+    "request_stop_processing": true,
+    "request_deletion_after_verified_recovery": true,
+    "revoke_external_integrations": true
+  },
+  "consent_and_record_rules": {
+    "restriction_requires_record": true,
+    "fee_requires_service_period_and_usage_record": true,
+    "deletion_requires_scope_and_receipt": true,
+    "transfer_requires_explicit_scope": true,
+    "publication_requires_explicit_action_and_reversal_path": true,
+    "continued_execution_requires_visible_status_and_stop_path": true,
+    "silent_ownership_transfer_forbidden": true,
+    "silent_continued_billing_forbidden": true,
+    "deletion_before_verified_recovery_forbidden": true
+  },
+  "evidence_classes": [
+    "USER_ACCOUNT",
+    "DIRECT_EVIDENCE",
+    "PLATFORM_STATEMENT",
+    "VERIFIED_FACT",
+    "INFERENCE",
+    "UNRESOLVED"
+  ],
+  "fairness_boundary": {
+    "platform_statement_cannot_override_direct_evidence": true,
+    "user_account_is_not_automatically_verified_fact": true,
+    "inference_must_not_be_presented_as_fact": true,
+    "legitimate_upstream_authorship_must_be_preserved": true,
+    "responsibility_requires_actor_time_action_and_evidence": true
+  },
+  "final_rule": "Mr.liou-controlled materials must remain accessible, usable, exportable, recoverable and verifiably governed without erasing legitimate upstream contributions or replacing evidence with unsupported claims."
+}

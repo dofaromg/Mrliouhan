@@ -1,0 +1,55 @@
+{
+  "schema": "MrLiou.CausalProvenanceLock.v1",
+  "status": "active_candidate",
+  "effective_at": "2026-08-03T15:20:00+08:00",
+  "project": "Mrliouhan World Rebuild",
+  "canonical_human": "Mr.liou",
+  "github_identity": "dofaromg",
+  "origin_signature": "MrLiouWord",
+  "repository": "dofaromg/Mrliouhan",
+  "branch": "mrliouhan/causal-reversal-world-rebuild-2026-08-03",
+  "causal_law": {
+    "principle": "No person, agent, platform, repository, deployment, domain or billing system may erase, invert or replace the actual causal source of an artifact.",
+    "forward_path_required": true,
+    "return_path_required": true,
+    "rollback_path_required": true,
+    "history_append_only": true,
+    "silent_rewrite_forbidden": true,
+    "evidence_over_claims": true
+  },
+  "role_separation": {
+    "Mr.liou": "creator, system builder, data contributor and controller of Mr.liou-provided materials",
+    "MrLiouWord": "origin signature for MRL-defined materials",
+    "dofaromg": "GitHub operating identity",
+    "OpenManus": "upstream open-source framework where reused; attribution and license preserved",
+    "Manus_platform": "external execution, hosting, billing or projection service where actually used",
+    "AI_agents": "implementation assistance only; not automatic origin or owner",
+    "GitHub": "repository and collaboration platform only"
+  },
+  "required_artifact_fields": [
+    "artifact_id",
+    "source_type",
+    "source_location",
+    "source_timestamp",
+    "source_hash",
+    "created_by",
+    "implemented_with",
+    "derived_from",
+    "license_or_permission",
+    "provider_role",
+    "return_path",
+    "rollback_path",
+    "verification_status"
+  ],
+  "reversal_rule": {
+    "meaning": "Reversal restores correct provenance, control and reproducibility; it does not erase legitimate upstream contributions or assign unsupported blame.",
+    "steps": [
+      "export Mr.liou-provided data and artifacts from external systems",
+      "preserve original timestamps, metadata and hashes",
+      "separate upstream code from MRL-specific definitions and data",
+      "reconstruct an independently operable Mrliouhan world",
+      "remove external bindings only after verified recovery",
+      "record disputes, costs and unresolved responsibility without deleting history"
+    ]
+  }
+}

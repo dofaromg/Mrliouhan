@@ -1,0 +1,67 @@
+schema: MrLiouhan.ExternalPlatformRegistry.v1
+status: example_only
+
+policy:
+  default_enabled: false
+  explicit_consent_required: true
+  export_path_required: true
+  revoke_path_required: true
+  billing_record_required_when_charged: true
+  domain_rollback_required_when_bound: true
+  secrets_must_come_from_environment: true
+
+platforms:
+  manus:
+    enabled: false
+    role:
+      - execution_platform
+      - hosting_candidate
+      - billing_provider_candidate
+      - domain_projection_candidate
+    account_id: null
+    project_ids: []
+    export:
+      method: manual_account_export
+      controlled_destination: null
+      manifest_path: null
+      verification_path: null
+    consent:
+      status: UNRESOLVED
+      record_location: null
+      withdrawn_at: null
+    billing:
+      status: UNRESOLVED
+      invoices: []
+      usage_records: []
+      refund_records: []
+    domains:
+      bindings: []
+      dns_snapshot_before: null
+      rollback_plan: null
+    revocation:
+      stop_deployment: false
+      disable_auto_pay: false
+      revoke_tokens: false
+      remove_shares: false
+      disconnect_domains: false
+      deletion_request_ticket: null
+      deletion_confirmation: null
+      retention_exception: null
+
+  openmanus_upstream:
+    enabled: true
+    role:
+      - upstream_open_source_framework
+    repository: FoundationAgents/OpenManus
+    attribution_required: true
+    license_record: LICENSE
+    external_service: false
+
+  github:
+    enabled: true
+    role:
+      - repository_platform
+      - collaboration_platform
+    repository: dofaromg/Mrliouhan
+    canonical_source_claim: false
+    secrets_must_not_be_committed: true
